@@ -2,7 +2,7 @@
 name = "japanese-text"
 version = "0.1.0"
 edition = "2021"
-authors = ["Your Name <your.email@example.com>"]
+authors = ["makoto asakura"]
 description = "日本語テキスト正規化ライブラリ - 全角半角変換、ひらがなカタカナ変換"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/0809android/japanese-text"
