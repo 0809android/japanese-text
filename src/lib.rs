@@ -550,20 +550,19 @@ pub fn expand_iteration_marks(input: &str) -> String {
     let chars: Vec<char> = input.chars().collect();
     let mut result = String::new();
 
-    for (i, &c) in chars.iter().enumerate() {
+    for &c in &chars {
         match c {
             // ひらがな繰り返し記号（無声音）
             'ゝ' => {
-                if i > 0 {
-                    result.push(chars[i - 1]);
+                if let Some(prev) = result.chars().last() {
+                    result.push(prev);
                 } else {
                     result.push(c);
                 }
             }
             // ひらがな繰り返し記号（濁音）
             'ゞ' => {
-                if i > 0 {
-                    let prev = chars[i - 1];
+                if let Some(prev) = result.chars().last() {
                     let voiced = add_dakuten(prev);
                     result.push(voiced);
                 } else {
@@ -572,16 +571,15 @@ pub fn expand_iteration_marks(input: &str) -> String {
             }
             // カタカナ繰り返し記号（無声音）
             'ヽ' => {
-                if i > 0 {
-                    result.push(chars[i - 1]);
+                if let Some(prev) = result.chars().last() {
+                    result.push(prev);
                 } else {
                     result.push(c);
                 }
             }
             // カタカナ繰り返し記号（濁音）
             'ヾ' => {
-                if i > 0 {
-                    let prev = chars[i - 1];
+                if let Some(prev) = result.chars().last() {
                     let voiced = add_dakuten(prev);
                     result.push(voiced);
                 } else {
@@ -794,6 +792,8 @@ mod tests {
     fn test_expand_iteration_marks() {
         assert_eq!(expand_iteration_marks("いろゝ"), "いろろ");
         assert_eq!(expand_iteration_marks("かゞ"), "かが");
+        assert_eq!(expand_iteration_marks("いろゝゝ"), "いろろろ");
+        assert_eq!(expand_iteration_marks("カヽヽ"), "カカカ");
         assert_eq!(expand_iteration_marks("トヽキ"), "トトキ");
         assert_eq!(expand_iteration_marks("カヾ"), "カガ");
     }
