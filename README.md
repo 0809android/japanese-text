@@ -306,6 +306,22 @@ cargo test
 cargo doc --open
 ```
 
+## リリース
+
+通常のリリースは`release-plz`で管理します。リリースPRをmainにマージすると、GitHub ActionsがTrusted Publishingでcrates.ioへ公開し、GitHub Releaseとtagを作成します。
+
+```bash
+# 公開前のローカル確認
+cargo test --locked
+cargo fmt -- --check
+cargo clippy --all-targets --all-features --locked -- -D warnings
+cargo doc --no-deps
+cargo run --example basic
+cargo publish --dry-run --locked --allow-dirty
+```
+
+Cargo.tomlのversionをmainで先に更新した場合など、release-plzがno-opになる状態では、GitHub Actionsの`Release` workflowを手動実行し、`force_publish`を有効にすると現在のversionを直接publishできます。この経路もcrates.io Trusted Publishingを使うため、ローカルのcrates.io tokenは不要です。
+
 ## パフォーマンス
 
 このライブラリは、よく使う文字変換はシンプルな文字マッピングで処理し、Unicode正規化は実績のある`unicode-normalization`に委ねます。用途に応じて個別関数と一括正規化APIを使い分けられます。
