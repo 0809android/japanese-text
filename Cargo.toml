@@ -1,6 +1,6 @@
 [package]
 name = "japanese-text"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 authors = ["0809android"]
 description = "日本語テキスト正規化ライブラリ - 全角半角変換、ひらがなカタカナ変換"
