@@ -1,9 +1,9 @@
 [package]
 name = "japanese-text"
-version = "0.1.1"
+version = "0.2.0"
 edition = "2021"
 authors = ["0809android"]
-description = "日本語テキスト正規化ライブラリ - 全角半角変換、ひらがなカタカナ変換"
+description = "日本語テキスト正規化ライブラリ - 文字幅、かな、Unicode、句読点、旧字体の正規化"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/0809android/japanese-text"
 keywords = ["japanese", "text", "normalization", "unicode", "conversion"]
@@ -11,3 +11,7 @@ categories = ["text-processing", "internationalization"]
 readme = "README.md"
 
 [dependencies]
+unicode-normalization = "0.1.25"
+
+[dev-dependencies]
+proptest = "1.11.0"

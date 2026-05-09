@@ -10,13 +10,18 @@
 
 - ✨ **全角⇔半角変換** - ASCII文字の相互変換
 - ✨ **カタカナ⇔ひらがな変換** - 日本語文字の相互変換
-- ✨ **半角カタカナ→全角カタカナ変換** - 濁点・半濁点も正しく処理
+- ✨ **半角カタカナ⇔全角カタカナ変換** - 濁点・半濁点も正しく処理
+- ✨ **Unicode正規化** - NFC/NFD/NFKC/NFKDに対応
+- ✨ **濁点・半濁点処理** - 結合・分解の両方に対応
+- ✨ **句読点・括弧・記号正規化** - 表記ゆれを統一
+- ✨ **旧字体→新字体変換** - 代表的な旧字体を新字体へ変換
+- ✨ **異体字セレクタ除去** - 検索・比較向けに文字を正規化
 - ✨ **文字種判定** - ひらがな、カタカナ、漢字、全角文字の判定
-- ✨ **文字種カウント** - 文字列内の各文字種をカウント
+- ✨ **文字種カウント・比率計算** - 文字列内の各文字種を分析
 - ✨ **空白正規化** - 全角スペース、タブなどを統一
 - ✨ **長音記号正規化** - 〜、～をーに統一
 - ✨ **繰り返し記号展開** - ゝ、ゞ、ヽ、ヾを展開
-- ✨ **ゼロ依存** - 純粋なRust実装、外部依存なし
+- ✨ **一括正規化API** - `normalize`、`NormalizeOptions`、`Normalizer`を提供
 - ✨ **シンプルなAPI** - 使いやすい関数群
 - ✨ **充実したテスト** - ユニットテストとドキュメントテストで主要機能を検証
 
@@ -26,7 +31,7 @@
 
 ```toml
 [dependencies]
-japanese-text = "0.1.0"
+japanese-text = "0.2.0"
 ```
 
 ## 基本的な使い方
@@ -54,6 +59,10 @@ fn main() {
     // 半角カタカナ→全角カタカナ変換
     let full_kana = half_width_katakana_to_full_width("ｶﾀｶﾅ");
     assert_eq!(full_kana, "カタカナ");
+
+    // 一括正規化
+    let normalized = normalize("ＡＢＣ　ｶﾞｷﾞｸﾞ，舊字體");
+    assert_eq!(normalized, "ABC ガギグ、旧字体");
 
     // 文字種判定
     assert_eq!(is_hiragana('あ'), true);
@@ -93,6 +102,7 @@ assert_eq!(to_full_width("123"), "１２３");
 
 ```rust
 assert_eq!(to_hiragana("カタカナ"), "かたかな");
+assert_eq!(to_hiragana("ヷヸヹヺ"), "わ\u{3099}ゐ\u{3099}ゑ\u{3099}を\u{3099}");
 ```
 
 #### `to_katakana(input: &str) -> String`
@@ -115,6 +125,16 @@ assert_eq!(half_width_katakana_to_full_width("ｶﾞｷﾞｸﾞ"), "ガギグ")
 assert_eq!(half_width_katakana_to_full_width("ﾊﾟﾋﾟﾌﾟ"), "パピプ");
 ```
 
+#### `full_width_katakana_to_half_width(input: &str) -> String`
+
+全角カタカナを半角カタカナに変換します。
+
+```rust
+assert_eq!(full_width_katakana_to_half_width("カタカナ"), "ｶﾀｶﾅ");
+assert_eq!(full_width_katakana_to_half_width("ガギグ"), "ｶﾞｷﾞｸﾞ");
+assert_eq!(full_width_katakana_to_half_width("パピプ"), "ﾊﾟﾋﾟﾌﾟ");
+```
+
 ### 文字種判定
 
 #### `is_hiragana(c: char) -> bool`
@@ -132,6 +152,8 @@ assert_eq!(is_hiragana('ア'), false);
 
 ```rust
 assert_eq!(is_katakana('ア'), true);
+assert_eq!(is_katakana('ー'), true);
+assert_eq!(is_katakana('ヷ'), true);
 assert_eq!(is_katakana('あ'), false);
 ```
 
@@ -141,6 +163,7 @@ assert_eq!(is_katakana('あ'), false);
 
 ```rust
 assert_eq!(is_half_width_katakana('ｱ'), true);
+assert_eq!(is_half_width_katakana('｡'), false);
 ```
 
 #### `is_kanji(c: char) -> bool`
@@ -159,6 +182,9 @@ assert_eq!(is_kanji('字'), true);
 ```rust
 assert_eq!(is_full_width('Ａ'), true);
 assert_eq!(is_full_width('１'), true);
+assert_eq!(is_full_width('ア'), true);
+assert_eq!(is_full_width('漢'), true);
+assert_eq!(is_full_width('A'), false);
 ```
 
 ### 文字種カウント
@@ -173,6 +199,30 @@ println!("ひらがな: {}", counts.hiragana);  // 1
 println!("カタカナ: {}", counts.katakana);  // 1
 println!("漢字: {}", counts.kanji);        // 1
 println!("ASCII: {}", counts.ascii);        // 6
+```
+
+#### `character_type_ratios(input: &str) -> CharacterTypeRatios`
+
+文字種ごとの比率を計算します。
+
+```rust
+let ratios = character_type_ratios("あア漢A");
+assert_eq!(ratios.hiragana, 0.25);
+assert_eq!(ratios.katakana, 0.25);
+assert_eq!(ratios.kanji, 0.25);
+assert_eq!(ratios.ascii, 0.25);
+```
+
+#### 分析・抽出
+
+```rust
+assert!(is_mostly_japanese("日本語です", 0.8));
+assert!(is_mostly_japanese("スーパー", 1.0));
+assert!(has_mixed_scripts("日本語ABC"));
+assert_eq!(extract_japanese("ABC日本語123"), "日本語");
+assert_eq!(extract_japanese("ABCスーパー123"), "スーパー");
+assert_eq!(extract_ascii("ABC日本語123"), "ABC123");
+assert_eq!(remove_symbols("日本語、ABC!"), "日本語ABC");
 ```
 
 ### テキスト正規化
@@ -203,6 +253,37 @@ assert_eq!(expand_iteration_marks("いろゝ"), "いろろ");
 assert_eq!(expand_iteration_marks("かゞ"), "かが");
 ```
 
+#### Unicode・濁点正規化
+
+```rust
+assert_eq!(normalize_nfkc("ＡＢＣ１２３ｶﾞ"), "ABC123ガ");
+assert_eq!(combine_dakuten("か\u{3099}"), "が");
+assert_eq!(decompose_dakuten("パ"), "ハ\u{309A}");
+```
+
+#### 句読点・記号・旧字体・異体字セレクタ
+
+```rust
+assert_eq!(normalize_punctuation("A，B．C､D｡"), "A、B。C、D。");
+assert_eq!(normalize_brackets_and_quotes("(\"本文\")"), "（「本文」）");
+assert_eq!(normalize_symbols("コ〜ヒ～ −"), "コーヒー -");
+assert_eq!(old_kanji_to_new("舊字體の國語"), "旧字体の国語");
+assert_eq!(remove_variation_selectors("葛\u{E0100}"), "葛");
+```
+
+#### 一括正規化
+
+```rust
+assert_eq!(normalize("ＡＢＣ　ｶﾞｷﾞｸﾞ，舊字體"), "ABC ガギグ、旧字体");
+
+let normalizer = Normalizer::new()
+    .hiragana(true)
+    .half_width_ascii(true)
+    .whitespace(WhitespaceMode::Collapse);
+
+assert_eq!(normalizer.normalize("ＡＢＣ　カタカナ"), "ABC かたかな");
+```
+
 ## ユースケース
 
 - ユーザー入力の正規化
@@ -227,7 +308,7 @@ cargo doc --open
 
 ## パフォーマンス
 
-このライブラリは、外部依存や複雑なロジックなしにシンプルな文字マッピングを使用しているため、非常に高速でオーバーヘッドが最小限です。
+このライブラリは、よく使う文字変換はシンプルな文字マッピングで処理し、Unicode正規化は実績のある`unicode-normalization`に委ねます。用途に応じて個別関数と一括正規化APIを使い分けられます。
 
 ## コントリビューション
 
@@ -253,10 +334,13 @@ cargo doc --open
 A lightweight Rust library for Japanese text normalization, supporting:
 - Full-width ⇔ Half-width conversion for ASCII characters
 - Katakana ⇔ Hiragana conversion
-- Half-width Katakana → Full-width Katakana conversion (with dakuten/handakuten support)
+- Half-width ⇔ Full-width Katakana conversion (with dakuten/handakuten support)
+- Unicode normalization
+- Punctuation, bracket, symbol, old kanji, and variation selector normalization
 - Character type detection (hiragana, katakana, kanji, etc.)
-- Character type counting
+- Character type counting and ratios
+- Builder-style batch normalization
 - Whitespace normalization
 - Prolonged sound mark normalization
 - Iteration mark expansion
-- Zero dependencies, pure Rust implementation
+- Unicode normalization powered by `unicode-normalization`
