@@ -49,9 +49,7 @@ pub fn to_half_width(input: &str) -> String {
                 // Full-width space (U+3000) to half-width space
                 '　' => ' ',
                 // Full-width ASCII variants (U+FF01-U+FF5E) to half-width
-                '\u{FF01}'..='\u{FF5E}' => {
-                    char::from_u32(c as u32 - 0xFF01 + 0x0021).unwrap_or(c)
-                }
+                '\u{FF01}'..='\u{FF5E}' => char::from_u32(c as u32 - 0xFF01 + 0x0021).unwrap_or(c),
                 // Keep other characters as-is
                 _ => c,
             }
@@ -82,9 +80,7 @@ pub fn to_full_width(input: &str) -> String {
                 // Half-width space to full-width space (U+3000)
                 ' ' => '　',
                 // Half-width ASCII (U+0021-U+007E) to full-width
-                '\u{0021}'..='\u{007E}' => {
-                    char::from_u32(c as u32 - 0x0021 + 0xFF01).unwrap_or(c)
-                }
+                '\u{0021}'..='\u{007E}' => char::from_u32(c as u32 - 0x0021 + 0xFF01).unwrap_or(c),
                 // Keep other characters as-is
                 _ => c,
             }
@@ -112,9 +108,7 @@ pub fn to_hiragana(input: &str) -> String {
         .map(|c| {
             match c {
                 // Katakana (U+30A1-U+30F6) to Hiragana (U+3041-U+3096)
-                '\u{30A1}'..='\u{30F6}' => {
-                    char::from_u32(c as u32 - 0x30A1 + 0x3041).unwrap_or(c)
-                }
+                '\u{30A1}'..='\u{30F6}' => char::from_u32(c as u32 - 0x30A1 + 0x3041).unwrap_or(c),
                 // Keep other characters as-is
                 _ => c,
             }
@@ -142,9 +136,7 @@ pub fn to_katakana(input: &str) -> String {
         .map(|c| {
             match c {
                 // Hiragana (U+3041-U+3096) to Katakana (U+30A1-U+30F6)
-                '\u{3041}'..='\u{3096}' => {
-                    char::from_u32(c as u32 - 0x3041 + 0x30A1).unwrap_or(c)
-                }
+                '\u{3041}'..='\u{3096}' => char::from_u32(c as u32 - 0x3041 + 0x30A1).unwrap_or(c),
                 // Keep other characters as-is
                 _ => c,
             }
@@ -340,51 +332,177 @@ pub fn half_width_katakana_to_full_width(input: &str) -> String {
 
         match (c, next) {
             // 濁点付き
-            ('ｶ', Some('ﾞ')) => { result.push('ガ'); i += 2; }
-            ('ｷ', Some('ﾞ')) => { result.push('ギ'); i += 2; }
-            ('ｸ', Some('ﾞ')) => { result.push('グ'); i += 2; }
-            ('ｹ', Some('ﾞ')) => { result.push('ゲ'); i += 2; }
-            ('ｺ', Some('ﾞ')) => { result.push('ゴ'); i += 2; }
-            ('ｻ', Some('ﾞ')) => { result.push('ザ'); i += 2; }
-            ('ｼ', Some('ﾞ')) => { result.push('ジ'); i += 2; }
-            ('ｽ', Some('ﾞ')) => { result.push('ズ'); i += 2; }
-            ('ｾ', Some('ﾞ')) => { result.push('ゼ'); i += 2; }
-            ('ｿ', Some('ﾞ')) => { result.push('ゾ'); i += 2; }
-            ('ﾀ', Some('ﾞ')) => { result.push('ダ'); i += 2; }
-            ('ﾁ', Some('ﾞ')) => { result.push('ヂ'); i += 2; }
-            ('ﾂ', Some('ﾞ')) => { result.push('ヅ'); i += 2; }
-            ('ﾃ', Some('ﾞ')) => { result.push('デ'); i += 2; }
-            ('ﾄ', Some('ﾞ')) => { result.push('ド'); i += 2; }
-            ('ﾊ', Some('ﾞ')) => { result.push('バ'); i += 2; }
-            ('ﾋ', Some('ﾞ')) => { result.push('ビ'); i += 2; }
-            ('ﾌ', Some('ﾞ')) => { result.push('ブ'); i += 2; }
-            ('ﾍ', Some('ﾞ')) => { result.push('ベ'); i += 2; }
-            ('ﾎ', Some('ﾞ')) => { result.push('ボ'); i += 2; }
-            ('ｳ', Some('ﾞ')) => { result.push('ヴ'); i += 2; }
+            ('ｶ', Some('ﾞ')) => {
+                result.push('ガ');
+                i += 2;
+            }
+            ('ｷ', Some('ﾞ')) => {
+                result.push('ギ');
+                i += 2;
+            }
+            ('ｸ', Some('ﾞ')) => {
+                result.push('グ');
+                i += 2;
+            }
+            ('ｹ', Some('ﾞ')) => {
+                result.push('ゲ');
+                i += 2;
+            }
+            ('ｺ', Some('ﾞ')) => {
+                result.push('ゴ');
+                i += 2;
+            }
+            ('ｻ', Some('ﾞ')) => {
+                result.push('ザ');
+                i += 2;
+            }
+            ('ｼ', Some('ﾞ')) => {
+                result.push('ジ');
+                i += 2;
+            }
+            ('ｽ', Some('ﾞ')) => {
+                result.push('ズ');
+                i += 2;
+            }
+            ('ｾ', Some('ﾞ')) => {
+                result.push('ゼ');
+                i += 2;
+            }
+            ('ｿ', Some('ﾞ')) => {
+                result.push('ゾ');
+                i += 2;
+            }
+            ('ﾀ', Some('ﾞ')) => {
+                result.push('ダ');
+                i += 2;
+            }
+            ('ﾁ', Some('ﾞ')) => {
+                result.push('ヂ');
+                i += 2;
+            }
+            ('ﾂ', Some('ﾞ')) => {
+                result.push('ヅ');
+                i += 2;
+            }
+            ('ﾃ', Some('ﾞ')) => {
+                result.push('デ');
+                i += 2;
+            }
+            ('ﾄ', Some('ﾞ')) => {
+                result.push('ド');
+                i += 2;
+            }
+            ('ﾊ', Some('ﾞ')) => {
+                result.push('バ');
+                i += 2;
+            }
+            ('ﾋ', Some('ﾞ')) => {
+                result.push('ビ');
+                i += 2;
+            }
+            ('ﾌ', Some('ﾞ')) => {
+                result.push('ブ');
+                i += 2;
+            }
+            ('ﾍ', Some('ﾞ')) => {
+                result.push('ベ');
+                i += 2;
+            }
+            ('ﾎ', Some('ﾞ')) => {
+                result.push('ボ');
+                i += 2;
+            }
+            ('ｳ', Some('ﾞ')) => {
+                result.push('ヴ');
+                i += 2;
+            }
 
             // 半濁点付き
-            ('ﾊ', Some('ﾟ')) => { result.push('パ'); i += 2; }
-            ('ﾋ', Some('ﾟ')) => { result.push('ピ'); i += 2; }
-            ('ﾌ', Some('ﾟ')) => { result.push('プ'); i += 2; }
-            ('ﾍ', Some('ﾟ')) => { result.push('ペ'); i += 2; }
-            ('ﾎ', Some('ﾟ')) => { result.push('ポ'); i += 2; }
+            ('ﾊ', Some('ﾟ')) => {
+                result.push('パ');
+                i += 2;
+            }
+            ('ﾋ', Some('ﾟ')) => {
+                result.push('ピ');
+                i += 2;
+            }
+            ('ﾌ', Some('ﾟ')) => {
+                result.push('プ');
+                i += 2;
+            }
+            ('ﾍ', Some('ﾟ')) => {
+                result.push('ペ');
+                i += 2;
+            }
+            ('ﾎ', Some('ﾟ')) => {
+                result.push('ポ');
+                i += 2;
+            }
 
             // 通常の半角カタカナ
             _ => {
                 let full = match c {
-                    'ｦ' => 'ヲ', 'ｧ' => 'ァ', 'ｨ' => 'ィ', 'ｩ' => 'ゥ', 'ｪ' => 'ェ', 'ｫ' => 'ォ',
-                    'ｬ' => 'ャ', 'ｭ' => 'ュ', 'ｮ' => 'ョ', 'ｯ' => 'ッ', 'ｰ' => 'ー',
-                    'ｱ' => 'ア', 'ｲ' => 'イ', 'ｳ' => 'ウ', 'ｴ' => 'エ', 'ｵ' => 'オ',
-                    'ｶ' => 'カ', 'ｷ' => 'キ', 'ｸ' => 'ク', 'ｹ' => 'ケ', 'ｺ' => 'コ',
-                    'ｻ' => 'サ', 'ｼ' => 'シ', 'ｽ' => 'ス', 'ｾ' => 'セ', 'ｿ' => 'ソ',
-                    'ﾀ' => 'タ', 'ﾁ' => 'チ', 'ﾂ' => 'ツ', 'ﾃ' => 'テ', 'ﾄ' => 'ト',
-                    'ﾅ' => 'ナ', 'ﾆ' => 'ニ', 'ﾇ' => 'ヌ', 'ﾈ' => 'ネ', 'ﾉ' => 'ノ',
-                    'ﾊ' => 'ハ', 'ﾋ' => 'ヒ', 'ﾌ' => 'フ', 'ﾍ' => 'ヘ', 'ﾎ' => 'ホ',
-                    'ﾏ' => 'マ', 'ﾐ' => 'ミ', 'ﾑ' => 'ム', 'ﾒ' => 'メ', 'ﾓ' => 'モ',
-                    'ﾔ' => 'ヤ', 'ﾕ' => 'ユ', 'ﾖ' => 'ヨ',
-                    'ﾗ' => 'ラ', 'ﾘ' => 'リ', 'ﾙ' => 'ル', 'ﾚ' => 'レ', 'ﾛ' => 'ロ',
-                    'ﾜ' => 'ワ', 'ﾝ' => 'ン',
-                    '｡' => '。', '｢' => '「', '｣' => '」', '､' => '、', '･' => '・',
+                    'ｦ' => 'ヲ',
+                    'ｧ' => 'ァ',
+                    'ｨ' => 'ィ',
+                    'ｩ' => 'ゥ',
+                    'ｪ' => 'ェ',
+                    'ｫ' => 'ォ',
+                    'ｬ' => 'ャ',
+                    'ｭ' => 'ュ',
+                    'ｮ' => 'ョ',
+                    'ｯ' => 'ッ',
+                    'ｰ' => 'ー',
+                    'ｱ' => 'ア',
+                    'ｲ' => 'イ',
+                    'ｳ' => 'ウ',
+                    'ｴ' => 'エ',
+                    'ｵ' => 'オ',
+                    'ｶ' => 'カ',
+                    'ｷ' => 'キ',
+                    'ｸ' => 'ク',
+                    'ｹ' => 'ケ',
+                    'ｺ' => 'コ',
+                    'ｻ' => 'サ',
+                    'ｼ' => 'シ',
+                    'ｽ' => 'ス',
+                    'ｾ' => 'セ',
+                    'ｿ' => 'ソ',
+                    'ﾀ' => 'タ',
+                    'ﾁ' => 'チ',
+                    'ﾂ' => 'ツ',
+                    'ﾃ' => 'テ',
+                    'ﾄ' => 'ト',
+                    'ﾅ' => 'ナ',
+                    'ﾆ' => 'ニ',
+                    'ﾇ' => 'ヌ',
+                    'ﾈ' => 'ネ',
+                    'ﾉ' => 'ノ',
+                    'ﾊ' => 'ハ',
+                    'ﾋ' => 'ヒ',
+                    'ﾌ' => 'フ',
+                    'ﾍ' => 'ヘ',
+                    'ﾎ' => 'ホ',
+                    'ﾏ' => 'マ',
+                    'ﾐ' => 'ミ',
+                    'ﾑ' => 'ム',
+                    'ﾒ' => 'メ',
+                    'ﾓ' => 'モ',
+                    'ﾔ' => 'ヤ',
+                    'ﾕ' => 'ユ',
+                    'ﾖ' => 'ヨ',
+                    'ﾗ' => 'ラ',
+                    'ﾘ' => 'リ',
+                    'ﾙ' => 'ル',
+                    'ﾚ' => 'レ',
+                    'ﾛ' => 'ロ',
+                    'ﾜ' => 'ワ',
+                    'ﾝ' => 'ン',
+                    '｡' => '。',
+                    '｢' => '「',
+                    '｣' => '」',
+                    '､' => '、',
+                    '･' => '・',
                     _ => c,
                 };
                 result.push(full);
@@ -481,15 +599,47 @@ pub fn expand_iteration_marks(input: &str) -> String {
 fn add_dakuten(c: char) -> char {
     match c {
         // ひらがな
-        'か' => 'が', 'き' => 'ぎ', 'く' => 'ぐ', 'け' => 'げ', 'こ' => 'ご',
-        'さ' => 'ざ', 'し' => 'じ', 'す' => 'ず', 'せ' => 'ぜ', 'そ' => 'ぞ',
-        'た' => 'だ', 'ち' => 'ぢ', 'つ' => 'づ', 'て' => 'で', 'と' => 'ど',
-        'は' => 'ば', 'ひ' => 'び', 'ふ' => 'ぶ', 'へ' => 'べ', 'ほ' => 'ぼ',
+        'か' => 'が',
+        'き' => 'ぎ',
+        'く' => 'ぐ',
+        'け' => 'げ',
+        'こ' => 'ご',
+        'さ' => 'ざ',
+        'し' => 'じ',
+        'す' => 'ず',
+        'せ' => 'ぜ',
+        'そ' => 'ぞ',
+        'た' => 'だ',
+        'ち' => 'ぢ',
+        'つ' => 'づ',
+        'て' => 'で',
+        'と' => 'ど',
+        'は' => 'ば',
+        'ひ' => 'び',
+        'ふ' => 'ぶ',
+        'へ' => 'べ',
+        'ほ' => 'ぼ',
         // カタカナ
-        'カ' => 'ガ', 'キ' => 'ギ', 'ク' => 'グ', 'ケ' => 'ゲ', 'コ' => 'ゴ',
-        'サ' => 'ザ', 'シ' => 'ジ', 'ス' => 'ズ', 'セ' => 'ゼ', 'ソ' => 'ゾ',
-        'タ' => 'ダ', 'チ' => 'ヂ', 'ツ' => 'ヅ', 'テ' => 'デ', 'ト' => 'ド',
-        'ハ' => 'バ', 'ヒ' => 'ビ', 'フ' => 'ブ', 'ヘ' => 'ベ', 'ホ' => 'ボ',
+        'カ' => 'ガ',
+        'キ' => 'ギ',
+        'ク' => 'グ',
+        'ケ' => 'ゲ',
+        'コ' => 'ゴ',
+        'サ' => 'ザ',
+        'シ' => 'ジ',
+        'ス' => 'ズ',
+        'セ' => 'ゼ',
+        'ソ' => 'ゾ',
+        'タ' => 'ダ',
+        'チ' => 'ヂ',
+        'ツ' => 'ヅ',
+        'テ' => 'デ',
+        'ト' => 'ド',
+        'ハ' => 'バ',
+        'ヒ' => 'ビ',
+        'フ' => 'ブ',
+        'ヘ' => 'ベ',
+        'ホ' => 'ボ',
         _ => c,
     }
 }
@@ -566,43 +716,43 @@ mod tests {
 
     #[test]
     fn test_is_hiragana() {
-        assert_eq!(is_hiragana('あ'), true);
-        assert_eq!(is_hiragana('ん'), true);
-        assert_eq!(is_hiragana('ア'), false);
-        assert_eq!(is_hiragana('A'), false);
-        assert_eq!(is_hiragana('漢'), false);
+        assert!(is_hiragana('あ'));
+        assert!(is_hiragana('ん'));
+        assert!(!is_hiragana('ア'));
+        assert!(!is_hiragana('A'));
+        assert!(!is_hiragana('漢'));
     }
 
     #[test]
     fn test_is_katakana() {
-        assert_eq!(is_katakana('ア'), true);
-        assert_eq!(is_katakana('ン'), true);
-        assert_eq!(is_katakana('あ'), false);
-        assert_eq!(is_katakana('A'), false);
+        assert!(is_katakana('ア'));
+        assert!(is_katakana('ン'));
+        assert!(!is_katakana('あ'));
+        assert!(!is_katakana('A'));
     }
 
     #[test]
     fn test_is_half_width_katakana() {
-        assert_eq!(is_half_width_katakana('ｱ'), true);
-        assert_eq!(is_half_width_katakana('ﾝ'), true);
-        assert_eq!(is_half_width_katakana('ア'), false);
-        assert_eq!(is_half_width_katakana('A'), false);
+        assert!(is_half_width_katakana('ｱ'));
+        assert!(is_half_width_katakana('ﾝ'));
+        assert!(!is_half_width_katakana('ア'));
+        assert!(!is_half_width_katakana('A'));
     }
 
     #[test]
     fn test_is_kanji() {
-        assert_eq!(is_kanji('漢'), true);
-        assert_eq!(is_kanji('字'), true);
-        assert_eq!(is_kanji('あ'), false);
-        assert_eq!(is_kanji('A'), false);
+        assert!(is_kanji('漢'));
+        assert!(is_kanji('字'));
+        assert!(!is_kanji('あ'));
+        assert!(!is_kanji('A'));
     }
 
     #[test]
     fn test_is_full_width() {
-        assert_eq!(is_full_width('Ａ'), true);
-        assert_eq!(is_full_width('１'), true);
-        assert_eq!(is_full_width('　'), true);
-        assert_eq!(is_full_width('A'), false);
+        assert!(is_full_width('Ａ'));
+        assert!(is_full_width('１'));
+        assert!(is_full_width('　'));
+        assert!(!is_full_width('A'));
     }
 
     #[test]
@@ -619,7 +769,10 @@ mod tests {
     fn test_normalize_whitespace() {
         assert_eq!(normalize_whitespace("Hello　World"), "Hello World");
         assert_eq!(normalize_whitespace("A\t\t\tB"), "A B");
-        assert_eq!(normalize_whitespace("  Multiple   Spaces  "), "Multiple Spaces");
+        assert_eq!(
+            normalize_whitespace("  Multiple   Spaces  "),
+            "Multiple Spaces"
+        );
     }
 
     #[test]
