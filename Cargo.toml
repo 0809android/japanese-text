@@ -5,10 +5,15 @@ edition = "2021"
 authors = ["0809android"]
 description = "日本語テキスト正規化ライブラリ - 文字幅、かな、Unicode、句読点、旧字体の正規化"
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/0809android/japanese-text"
+repository = "https://github.com/kinocode-jp/japanese-text"
 keywords = ["japanese", "text", "normalization", "unicode", "conversion"]
 categories = ["text-processing", "internationalization"]
 readme = "README.md"
+exclude = [
+    ".github/",
+    ".gitignore",
+    "release-plz.toml",
+]
 
 [dependencies]
 unicode-normalization = "0.1.25"

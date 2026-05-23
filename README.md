@@ -4,7 +4,7 @@
 
 [![Crates.io](https://img.shields.io/crates/v/japanese-text.svg)](https://crates.io/crates/japanese-text)
 [![Documentation](https://docs.rs/japanese-text/badge.svg)](https://docs.rs/japanese-text)
-[![License](https://img.shields.io/crates/l/japanese-text.svg)](https://github.com/0809android/japanese-text#license)
+[![License](https://img.shields.io/crates/l/japanese-text.svg)](https://github.com/kinocode-jp/japanese-text#license)
 
 ## 特徴
 
