@@ -18,7 +18,7 @@ permissions:
 jobs:
   release:
     name: Publish release
-    runs-on: [self-hosted, Linux, ARM64, oci-build]
+    runs-on: [self-hosted, Linux, ARM64, shared-build]
     if: ${{ github.repository_owner == '0809android' }}
     permissions:
       contents: write
@@ -79,7 +79,7 @@ jobs:
 
   release-pr:
     name: Create release PR
-    runs-on: [self-hosted, Linux, ARM64, oci-build]
+    runs-on: [self-hosted, Linux, ARM64, shared-build]
     if: ${{ github.repository_owner == '0809android' }}
     permissions:
       contents: write
